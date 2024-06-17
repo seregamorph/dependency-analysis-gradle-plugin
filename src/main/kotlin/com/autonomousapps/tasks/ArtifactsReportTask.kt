@@ -11,9 +11,11 @@ import com.autonomousapps.model.PhysicalArtifact
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.artifacts.ArtifactCollection
+import org.gradle.api.artifacts.result.ResolvedComponentResult
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.*
 
 /**
@@ -28,6 +30,9 @@ abstract class ArtifactsReportTask : DefaultTask() {
   init {
     description = "Produces a report that lists all direct and transitive dependencies, along with their artifacts"
   }
+
+  @get:Input
+  lateinit var classpathResult: Provider<ResolvedComponentResult>
 
   private lateinit var artifacts: ArtifactCollection
 

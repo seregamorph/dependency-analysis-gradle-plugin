@@ -22,6 +22,7 @@ import org.gradle.api.artifacts.result.ResolvedComponentResult
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 import org.gradle.api.provider.SetProperty
 import org.gradle.api.tasks.*
 
@@ -35,8 +36,8 @@ abstract class GraphViewTask : DefaultTask() {
   @get:Internal
   abstract val compileClasspathName: Property<String>
 
-  @get:Internal
-  abstract val compileClasspathResult: Property<ResolvedComponentResult>
+  @get:Input
+  lateinit var compileClasspathResult: Provider<ResolvedComponentResult>
 
   @get:Internal
   abstract val compileClasspathFileCoordinates: SetProperty<Coordinates>
@@ -44,8 +45,8 @@ abstract class GraphViewTask : DefaultTask() {
   @get:Internal
   abstract val runtimeClasspathName: Property<String>
 
-  @get:Internal
-  abstract val runtimeClasspathResult: Property<ResolvedComponentResult>
+  @get:Input
+  lateinit var runtimeClasspathResult: Provider<ResolvedComponentResult>
 
   @get:Internal
   abstract val runtimeClasspathFileCoordinates: SetProperty<Coordinates>
@@ -107,7 +108,7 @@ abstract class GraphViewTask : DefaultTask() {
     jarAttr: String,
   ) {
     compileClasspathName.set(compileClasspath.name)
-    compileClasspathResult.set(compileClasspath.incoming.resolutionResult.rootComponent)
+    compileClasspathResult = compileClasspath.incoming.resolutionResult.rootComponent
     compileClasspathFileCoordinates.set(project.provider {
       compileClasspath.allDependencies
         .filterIsInstance<FileCollectionDependency>()
@@ -115,7 +116,7 @@ abstract class GraphViewTask : DefaultTask() {
     })
 
     runtimeClasspathName.set(runtimeClasspath.name)
-    runtimeClasspathResult.set(runtimeClasspath.incoming.resolutionResult.rootComponent)
+    runtimeClasspathResult = runtimeClasspath.incoming.resolutionResult.rootComponent
     runtimeClasspathFileCoordinates.set(project.provider {
       runtimeClasspath.allDependencies
         .filterIsInstance<FileCollectionDependency>()

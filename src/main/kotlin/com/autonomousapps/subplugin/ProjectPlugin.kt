@@ -568,6 +568,8 @@ internal class ProjectPlugin(private val project: Project) {
 
     // Lists the dependencies declared for building the project, along with their physical artifacts (jars).
     val artifactsReport = tasks.register<ArtifactsReportTask>("artifactsReport$taskNameSuffix") {
+      val compileClasspathConfiguration = configurations[dependencyAnalyzer.compileConfigurationName]
+      classpathResult = compileClasspathConfiguration.incoming.resolutionResult.rootComponent
       setClasspath(
         configurations[dependencyAnalyzer.compileConfigurationName].artifactsFor(dependencyAnalyzer.attributeValueJar)
       )
@@ -578,6 +580,8 @@ internal class ProjectPlugin(private val project: Project) {
 
     // Lists the dependencies declared for running the project, along with their physical artifacts (jars).
     val artifactsReportRuntime = tasks.register<ArtifactsReportTask>("artifactsReportRuntime$taskNameSuffix") {
+      val runtimeClasspathConfiguration = configurations[dependencyAnalyzer.runtimeConfigurationName]
+      classpathResult = runtimeClasspathConfiguration.incoming.resolutionResult.rootComponent
       setClasspath(
         configurations[dependencyAnalyzer.runtimeConfigurationName].artifactsFor(dependencyAnalyzer.attributeValueJar)
       )
